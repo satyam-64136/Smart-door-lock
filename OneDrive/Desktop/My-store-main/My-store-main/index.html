@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#080c14"/>
+  <title>Satyam's Store</title>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- HOURGLASS LOADER — From Uiverse.io by nima-mollazadeh (exact) -->
+<div id="page-loader">
+  <div class="loader-inner">
+    <svg
+      aria-label="loader being flipped clockwise and circled by three white curves fading in and out"
+      role="img"
+      height="56px"
+      width="56px"
+      viewBox="0 0 56 56"
+      class="loader"
+    >
+      <clipPath id="sand-mound-top">
+        <path
+          d="M 14.613 13.087 C 15.814 12.059 19.3 8.039 20.3 6.539 C 21.5 4.789 21.5 2.039 21.5 2.039 L 3 2.039 C 3 2.039 3 4.789 4.2 6.539 C 5.2 8.039 8.686 12.059 9.887 13.087 C 11 14.039 12.25 14.039 12.25 14.039 C 12.25 14.039 13.5 14.039 14.613 13.087 Z"
+          class="loader__sand-mound-top"
+        ></path>
+      </clipPath>
+      <clipPath id="sand-mound-bottom">
+        <path
+          d="M 14.613 20.452 C 15.814 21.48 19.3 25.5 20.3 27 C 21.5 28.75 21.5 31.5 21.5 31.5 L 3 31.5 C 3 31.5 3 28.75 4.2 27 C 5.2 25.5 8.686 21.48 9.887 20.452 C 11 19.5 12.25 19.5 12.25 19.5 C 12.25 19.5 13.5 19.5 14.613 20.452 Z"
+          class="loader__sand-mound-bottom"
+        ></path>
+      </clipPath>
+      <g transform="translate(2,2)">
+        <g
+          transform="rotate(-90,26,26)"
+          stroke-linecap="round"
+          stroke-dashoffset="153.94"
+          stroke-dasharray="153.94 153.94"
+          stroke="hsl(0,0%,100%)"
+          fill="none"
+        >
+          <circle
+            transform="rotate(0,26,26)"
+            r="24.5"
+            cy="26"
+            cx="26"
+            stroke-width="2.5"
+            class="loader__motion-thick"
+          ></circle>
+          <circle
+            transform="rotate(90,26,26)"
+            r="24.5"
+            cy="26"
+            cx="26"
+            stroke-width="1.75"
+            class="loader__motion-medium"
+          ></circle>
+          <circle
+            transform="rotate(180,26,26)"
+            r="24.5"
+            cy="26"
+            cx="26"
+            stroke-width="1"
+            class="loader__motion-thin"
+          ></circle>
+        </g>
+        <g transform="translate(13.75,9.25)" class="loader__model">
+          <path
+            d="M 1.5 2 L 23 2 C 23 2 22.5 8.5 19 12 C 16 15.5 13.5 13.5 13.5 16.75 C 13.5 20 16 18 19 21.5 C 22.5 25 23 31.5 23 31.5 L 1.5 31.5 C 1.5 31.5 2 25 5.5 21.5 C 8.5 18 11 20 11 16.75 C 11 13.5 8.5 15.5 5.5 12 C 2 8.5 1.5 2 1.5 2 Z"
+            fill="hsl(var(--hue),90%,85%)"
+          ></path>
+          <g stroke-linecap="round" stroke="hsl(35,90%,90%)">
+            <line y2="20.75" x2="12" y1="15.75" x1="12" stroke-dasharray="0.25 33.75" stroke-width="1" class="loader__sand-grain-left"></line>
+            <line y2="21.75" x2="12.5" y1="16.75" x1="12.5" stroke-dasharray="0.25 33.75" stroke-width="1" class="loader__sand-grain-right"></line>
+            <line y2="31.5" x2="12.25" y1="18" x1="12.25" stroke-dasharray="0.5 107.5" stroke-width="1" class="loader__sand-drop"></line>
+            <line y2="31.5" x2="12.25" y1="14.75" x1="12.25" stroke-dasharray="54 54" stroke-width="1.5" class="loader__sand-fill"></line>
+            <line y2="31.5" x2="12" y1="16" x1="12" stroke-dasharray="1 107" stroke-width="1" stroke="hsl(35,90%,83%)" class="loader__sand-line-left"></line>
+            <line y2="31.5" x2="12.5" y1="16" x1="12.5" stroke-dasharray="12 96" stroke-width="1" stroke="hsl(35,90%,83%)" class="loader__sand-line-right"></line>
+            <g stroke-width="0" fill="hsl(35,90%,90%)">
+              <path d="M 12.25 15 L 15.392 13.486 C 21.737 11.168 22.5 2 22.5 2 L 2 2.013 C 2 2.013 2.753 11.046 9.009 13.438 L 12.25 15 Z" clip-path="url(#sand-mound-top)"></path>
+              <path d="M 12.25 18.5 L 15.392 20.014 C 21.737 22.332 22.5 31.5 22.5 31.5 L 2 31.487 C 2 31.487 2.753 22.454 9.009 20.062 Z" clip-path="url(#sand-mound-bottom)"></path>
+            </g>
+          </g>
+          <g stroke-width="2" stroke-linecap="round" opacity="0.7" fill="none">
+            <path d="M 19.437 3.421 C 19.437 3.421 19.671 6.454 17.914 8.846 C 16.157 11.238 14.5 11.5 14.5 11.5" stroke="hsl(0,0%,100%)" class="loader__glare-top"></path>
+            <path transform="rotate(180,12.25,16.75)" d="M 19.437 3.421 C 19.437 3.421 19.671 6.454 17.914 8.846 C 16.157 11.238 14.5 11.5 14.5 11.5" stroke="hsla(0,0%,100%,0)" class="loader__glare-bottom"></path>
+          </g>
+          <rect height="2" width="24.5" fill="hsl(var(--hue),90%,50%)"></rect>
+          <rect height="1" width="19.5" y="0.5" x="2.5" ry="0.5" rx="0.5" fill="hsl(var(--hue),90%,57.5%)"></rect>
+          <rect height="2" width="24.5" y="31.5" fill="hsl(var(--hue),90%,50%)"></rect>
+          <rect height="1" width="19.5" y="32" x="2.5" ry="0.5" rx="0.5" fill="hsl(var(--hue),90%,57.5%)"></rect>
+        </g>
+      </g>
+    </svg>
+    <p class="loader-label">Loading products<span class="loader-dots"></span></p>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="index.html">
+      <div class="nav-brand-icon"><i data-lucide="zap" style="width:15px;height:15px"></i></div>
+      <span class="nav-brand-name">Satyam's Store</span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link active" href="index.html">
+        <i data-lucide="shopping-bag" style="width:14px;height:14px"></i> Order
+      </a>
+      <a class="nav-link" href="admin.html">
+        <i data-lucide="settings" style="width:14px;height:14px"></i> Admin
+      </a>
+    </div>
+  </div>
+</nav>
+
+
+<!-- GRID -->
+<main class="page-wrap" style="padding-top:16px">
+  <div id="loading-state" class="state-box">
+    <div class="spinner"></div>
+    <p style="font-family:'Syne',sans-serif;font-weight:700;color:#94a3b8;font-size:.9rem">Connecting…</p>
+  </div>
+  <div id="error-state" class="state-box hidden">
+    <i data-lucide="wifi-off" style="width:44px;height:44px;opacity:.2;margin-bottom:12px;color:#f87171"></i>
+    <p id="error-msg" style="font-family:'Syne',sans-serif;font-weight:700;color:#f87171;font-size:.9rem">Connection failed</p>
+    <button onclick="loadProducts()" class="retry-btn" style="margin-top:14px">
+      <i data-lucide="refresh-cw" style="width:13px;height:13px"></i> Retry
+    </button>
+  </div>
+  <div id="empty-state" class="state-box hidden">
+    <i data-lucide="inbox" style="width:44px;height:44px;opacity:.2;margin-bottom:12px;color:#22d3ee"></i>
+    <p style="font-family:'Syne',sans-serif;font-weight:700;color:#94a3b8">No products available</p>
+  </div>
+  <div id="product-grid" class="p-grid hidden"></div>
+</main>
+
+<!-- BOTTOM CART BAR -->
+<div class="bottom-bar">
+  <div class="bottom-bar-info">
+    <div class="bottom-stat">
+      <i data-lucide="shopping-cart" style="width:14px;height:14px;color:#22d3ee"></i>
+      <span>Items:</span>
+      <strong id="cart-count">0</strong>
+    </div>
+    <div class="bottom-divider"></div>
+    <div class="bottom-stat">
+      <i data-lucide="indian-rupee" style="width:14px;height:14px;color:#22d3ee"></i>
+      <strong id="cart-total" class="gold">0.00</strong>
+    </div>
+  </div>
+  <button class="proceed-btn" id="proceed-btn" onclick="proceedToPayment()">
+    <i data-lucide="arrow-right" style="width:15px;height:15px"></i>
+    Proceed
+  </button>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="shared.js"></script>
+<script>
+let allProducts = [];
+let cart = {};
+
+document.addEventListener('DOMContentLoaded', async () => {
+  lucide.createIcons();
+  await loadProducts();
+  hideLoader();
+  // Load cart from sessionStorage
+  const saved = sessionStorage.getItem('ss_cart');
+  if (saved) { cart = JSON.parse(saved); updateCartBar(); }
+});
+
+async function loadProducts() {
+  showState('loading');
+  try {
+    const raw = await gasGet('getProducts');
+    allProducts = parseProducts(raw);
+    renderGrid(allProducts);
+    updateCartBar();
+  } catch(err) {
+    document.getElementById('error-msg').textContent = 'Cannot reach Google Sheets.';
+    showState('error');
+  }
+}
+
+function renderGrid(products) {
+  const grid = document.getElementById('product-grid');
+  if (!products || !products.length) { showState('empty'); return; }
+  showState('grid');
+  grid.innerHTML = products.map(p => buildCard(p)).join('');
+  lucide.createIcons();
+}
+
+function buildCard(p) {
+  const qty = cart[p.id] || 0;
+  const oos = p.stock <= 0;
+  const inCart = qty > 0;
+
+  const imgHtml = (p.image && p.image.startsWith('http'))
+    ? `<img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+       <div class="card-img-placeholder" style="display:none">${placeholderSVG()}</div>`
+    : `<div class="card-img-placeholder">${placeholderSVG()}</div>`;
+
+  return `
+  <div class="p-card ${inCart?'in-cart':''} ${oos?'oos':''}" id="card-${esc(p.id)}">
+    ${inCart?`<div class="cart-badge">${qty}</div>`:''}
+    <div class="card-img">
+      ${imgHtml}
+      ${oos?`<div class="oos-label">Out of Stock</div>`:''}
+    </div>
+    <div class="card-body">
+      <div class="card-name">${esc(p.name)}</div>
+      <div class="card-price">₹${p.price.toFixed(2)}</div>
+      <div class="card-stock">${oos?'Out of stock':'Stock: '+p.stock}</div>
+    </div>
+    <div class="qty-row">
+      <button class="qty-btn minus" onclick="changeQty('${esc(p.id)}',-1)" ${qty===0?'disabled':''}>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <span class="qty-val">${qty}</span>
+      <button class="qty-btn plus" onclick="changeQty('${esc(p.id)}',1)" ${oos?'disabled':''}>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div>
+  </div>`;
+}
+
+function filterGrid() {
+  const q = document.getElementById('search-input').value.trim().toLowerCase();
+  const list = q ? allProducts.filter(p =>
+    p.name.toLowerCase().includes(q) || p.barcode.includes(q)) : allProducts;
+  renderGrid(list);
+}
+
+function changeQty(id, delta) {
+  const p = allProducts.find(x => x.id === id);
+  if (!p) return;
+  const cur = cart[id] || 0;
+  const next = Math.max(0, Math.min(cur + delta, p.stock));
+  if (next === 0) delete cart[id]; else cart[id] = next;
+  sessionStorage.setItem('ss_cart', JSON.stringify(cart));
+  sessionStorage.setItem('ss_products', JSON.stringify(allProducts));
+  const el = document.getElementById(`card-${id}`);
+  if (el) el.outerHTML = buildCard(p);
+  lucide.createIcons();
+  updateCartBar();
+}
+
+function updateCartBar() {
+  let count = 0, total = 0;
+  for (const [id, qty] of Object.entries(cart)) {
+    const p = allProducts.find(x => x.id === id);
+    if (p) { count += qty; total += qty * p.price; }
+  }
+  document.getElementById('cart-count').textContent = count;
+  document.getElementById('cart-total').textContent = total.toFixed(2);
+  const btn = document.getElementById('proceed-btn');
+  btn.disabled = count === 0;
+}
+
+function proceedToPayment() {
+  if (!Object.keys(cart).length) { toast('Add items first'); return; }
+  window.location.href = 'payment.html';
+}
+
+function showState(s) {
+  document.getElementById('loading-state').classList.toggle('hidden', s !== 'loading');
+  document.getElementById('error-state').classList.toggle('hidden', s !== 'error');
+  document.getElementById('empty-state').classList.toggle('hidden', s !== 'empty');
+  document.getElementById('product-grid').classList.toggle('hidden', s !== 'grid');
+}
+
+// Disable right-click / long-press on images
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('touchstart', e => { if (e.target.tagName==='IMG') e.preventDefault(); }, {passive:false});
+</script>
+</body>
+</html>

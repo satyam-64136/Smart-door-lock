@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#080c14"/>
+  <title>Sales — Satyam's Store</title>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="page-loader">
+  <div class="loader-inner">
+    <div aria-label="Loading" role="img" class="wheel-and-hamster">
+      <div class="wheel"></div>
+      <div class="hamster"><div class="hamster__body">
+        <div class="hamster__head"><div class="hamster__ear"></div><div class="hamster__eye"></div><div class="hamster__nose"></div></div>
+        <div class="hamster__limb hamster__limb--fr"></div><div class="hamster__limb hamster__limb--fl"></div>
+        <div class="hamster__limb hamster__limb--br"></div><div class="hamster__limb hamster__limb--bl"></div>
+        <div class="hamster__tail"></div>
+      </div></div>
+      <div class="spoke"></div>
+    </div>
+    <p class="loader-label">Loading sales<span class="loader-dots"></span></p>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="index.html">
+      <div class="nav-brand-icon"><i data-lucide="zap" style="width:15px;height:15px"></i></div>
+      <span class="nav-brand-name">Satyam's Store</span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">
+        <i data-lucide="shopping-bag" style="width:14px;height:14px"></i> Store
+      </a>
+      <a class="nav-link" href="admin.html">
+        <i data-lucide="settings" style="width:14px;height:14px"></i> Admin
+      </a>
+      <a class="nav-link active" href="admin-sales.html">
+        <i data-lucide="bar-chart-2" style="width:14px;height:14px"></i> Sales
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrap" style="padding-bottom:40px">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
+    <div class="page-title" style="margin-bottom:0">
+      <i data-lucide="bar-chart-2" style="width:22px;height:22px;color:#22d3ee;display:inline-block;vertical-align:middle;margin-right:8px"></i>
+      Sales History
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <select id="date-select" onchange="loadSales()" style="background:var(--surface);border:1px solid var(--border);border-radius:9px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.82rem;padding:7px 12px;outline:none;cursor:pointer">
+        <option value="">Today</option>
+      </select>
+      <button onclick="loadSales()" style="display:inline-flex;align-items:center;gap:5px;padding:7px 12px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.2);border-radius:9px;color:var(--cyan);font-size:.78rem;font-weight:600;cursor:pointer">
+        <i data-lucide="refresh-cw" style="width:13px;height:13px" id="refresh-icon"></i> Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Summary cards -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center">
+      <div id="s-count" style="font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--cyan)">—</div>
+      <div style="font-size:.72rem;color:var(--text3);margin-top:3px">Total Sales</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center">
+      <div id="s-revenue" style="font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;color:#34d399">—</div>
+      <div style="font-size:.72rem;color:var(--text3);margin-top:3px">Revenue (₹)</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center">
+      <div id="s-avg" style="font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;color:#a78bfa">—</div>
+      <div style="font-size:.72rem;color:var(--text3);margin-top:3px">Avg Order (₹)</div>
+    </div>
+  </div>
+
+  <!-- Table card -->
+  <div class="admin-card">
+    <div id="sales-loading" style="text-align:center;padding:36px;color:var(--text3);font-size:.84rem">
+      <div class="spinner" style="width:28px;height:28px;margin:0 auto 10px"></div>
+      Loading sales…
+    </div>
+    <div id="sales-empty" class="hidden" style="text-align:center;padding:40px;color:var(--text3);font-size:.84rem">
+      <i data-lucide="inbox" style="width:36px;height:36px;opacity:.2;margin-bottom:10px;color:#22d3ee"></i>
+      <p>No sales recorded for this date.</p>
+    </div>
+    <div id="sales-table-wrap" class="hidden" style="overflow-x:auto">
+      <table class="sales-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Items</th>
+            <th style="text-align:right">Total</th>
+          </tr>
+        </thead>
+        <tbody id="sales-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="shared.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  lucide.createIcons();
+  populateDateSelect();
+  await loadSales();
+  hideLoader();
+});
+
+function setSalesState(state) {
+  document.getElementById('sales-loading').classList.toggle('hidden',    state !== 'loading');
+  document.getElementById('sales-empty').classList.toggle('hidden',     state !== 'empty');
+  document.getElementById('sales-table-wrap').classList.toggle('hidden', state !== 'data');
+}
+
+function populateDateSelect() {
+  const sel = document.getElementById('date-select');
+  const today = new Date();
+  // Generate last 30 days as options
+  for (let i = 0; i < 30; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const label = d.toLocaleDateString('en-IN');
+    const opt = document.createElement('option');
+    opt.value = label;
+    opt.textContent = i === 0 ? `Today (${label})` : label;
+    if (i === 0) opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+
+async function loadSales() {
+  const sel = document.getElementById('date-select');
+  const date = sel.value || new Date().toLocaleDateString('en-IN');
+  const icon = document.getElementById('refresh-icon');
+  if (icon) icon.style.animation = 'spin .7s linear infinite';
+
+  setSalesState('loading');
+
+  try {
+    const raw = await gasGet('getSalesByDate', { date });
+
+    if (!raw || !raw.length) {
+      setSalesState('empty');
+      updateSummary([]);
+      return;
+    }
+
+    // rows: [date, time, items, total]
+    const sales = raw.map(r => ({
+      date:  cleanSheetVal(r[0]),
+      time:  cleanSheetVal(r[1]),
+      items: String(r[2] || ''),
+      total: parseFloat(r[3]) || 0,
+    }));
+
+    renderSalesTable(sales);
+    updateSummary(sales);
+
+  } catch(err) {
+    toast('Failed to load sales — check connection');
+    setSalesState('empty');
+  } finally {
+    if (icon) icon.style.animation = 'none';
+  }
+}
+
+function renderSalesTable(sales) {
+  setSalesState('data');
+
+  const tbody = document.getElementById('sales-tbody');
+  tbody.innerHTML = [...sales].reverse().map(s => `
+    <tr>
+      <td style="white-space:nowrap;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.78rem">${esc(s.time)}</td>
+      <td style="color:var(--text2);font-size:.8rem;max-width:320px">${esc(s.items)}</td>
+      <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:var(--cyan);font-weight:700;white-space:nowrap">₹${s.total.toFixed(2)}</td>
+    </tr>
+  `).join('');
+}
+
+function updateSummary(sales) {
+  const count   = sales.length;
+  const revenue = sales.reduce((s, r) => s + r.total, 0);
+  const avg     = count ? revenue / count : 0;
+  document.getElementById('s-count').textContent   = count;
+  document.getElementById('s-revenue').textContent = revenue.toFixed(0);
+  document.getElementById('s-avg').textContent     = avg.toFixed(0);
+}
+</script>
+</body>
+</html>

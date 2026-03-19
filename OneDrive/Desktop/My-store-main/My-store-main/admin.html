@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#080c14"/>
+  <title>Admin — Satyam's Store</title>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    /* ── Login screen ── */
+    #login-screen {
+      position: fixed; inset: 0; z-index: 99999;
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse 80% 50% at 20% 10%, rgba(34,211,238,.06) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(167,139,250,.07) 0%, transparent 55%);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    #login-screen.hidden { display: none; }
+    .login-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 28px;
+      width: 100%; max-width: 380px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(34,211,238,.06);
+      text-align: center;
+    }
+    .login-icon {
+      width: 60px; height: 60px;
+      background: linear-gradient(135deg, rgba(34,211,238,.15), rgba(167,139,250,.15));
+      border: 1px solid rgba(34,211,238,.3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 18px;
+      box-shadow: 0 0 20px rgba(34,211,238,.15);
+      color: var(--cyan);
+    }
+    .login-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem; font-weight: 800;
+      color: var(--text); letter-spacing: -.02em;
+      margin-bottom: 4px;
+    }
+    .login-sub { font-size: .8rem; color: var(--text3); margin-bottom: 24px; }
+    .login-input-wrap { position: relative; margin-bottom: 12px; }
+    .login-input {
+      width: 100%; padding: 12px 44px 12px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .9rem; outline: none;
+      transition: border-color .15s, box-shadow .15s;
+      -webkit-appearance: none;
+    }
+    .login-input:focus { border-color: rgba(34,211,238,.4); box-shadow: 0 0 0 3px rgba(34,211,238,.08); }
+    .login-input.error { border-color: rgba(248,113,113,.5); box-shadow: 0 0 0 3px rgba(248,113,113,.08); animation: shake .3s ease; }
+    .eye-btn {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--text3); cursor: pointer; padding: 2px;
+      display: flex; align-items: center;
+    }
+    .eye-btn:hover { color: var(--text2); }
+    .login-btn {
+      width: 100%; padding: 12px;
+      background: linear-gradient(135deg, rgba(34,211,238,.15), rgba(34,211,238,.28));
+      border: 1px solid rgba(34,211,238,.4);
+      border-radius: 11px;
+      color: var(--cyan);
+      font-family: 'Syne', sans-serif;
+      font-size: .9rem; font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 0 18px rgba(34,211,238,.15);
+      transition: all .15s;
+      margin-bottom: 10px;
+    }
+    .login-btn:hover { box-shadow: 0 0 28px rgba(34,211,238,.3); }
+    .login-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .login-error {
+      font-size: .78rem; color: var(--red);
+      min-height: 18px; margin-top: 2px;
+    }
+    .login-back {
+      font-size: .76rem; color: var(--text3);
+      text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
+      transition: color .12s;
+    }
+    .login-back:hover { color: var(--text2); }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%,60%  { transform: translateX(-6px); }
+      40%,80%  { transform: translateX(6px); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ LOGIN SCREEN ══════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-icon">
+      <i data-lucide="lock" style="width:24px;height:24px"></i>
+    </div>
+    <div class="login-title">Admin Access</div>
+    <p class="login-sub">Enter password to continue</p>
+    <form onsubmit="attemptLogin(event)">
+      <div class="login-input-wrap">
+        <input id="pw-input" type="password" class="login-input"
+               placeholder="Password" autocomplete="current-password" autofocus/>
+        <button type="button" class="eye-btn" onclick="togglePw()">
+          <i data-lucide="eye" style="width:16px;height:16px" id="eye-icon"></i>
+        </button>
+      </div>
+      <div class="login-error" id="login-error"></div>
+      <button type="submit" class="login-btn" id="login-btn" style="margin-top:10px">
+        <i data-lucide="log-in" style="width:15px;height:15px;display:inline-block;vertical-align:middle;margin-right:6px"></i>
+        Login
+      </button>
+    </form>
+    <a href="index.html" class="login-back">
+      <i data-lucide="arrow-left" style="width:13px;height:13px"></i> Back to store
+    </a>
+  </div>
+</div>
+
+<!-- ══════════ HAMSTER LOADER ══════════ -->
+<div id="page-loader" style="display:none">
+  <div class="loader-inner">
+    <div aria-label="Loading" role="img" class="wheel-and-hamster">
+      <div class="wheel"></div>
+      <div class="hamster"><div class="hamster__body">
+        <div class="hamster__head"><div class="hamster__ear"></div><div class="hamster__eye"></div><div class="hamster__nose"></div></div>
+        <div class="hamster__limb hamster__limb--fr"></div><div class="hamster__limb hamster__limb--fl"></div>
+        <div class="hamster__limb hamster__limb--br"></div><div class="hamster__limb hamster__limb--bl"></div>
+        <div class="hamster__tail"></div>
+      </div></div>
+      <div class="spoke"></div>
+    </div>
+    <p class="loader-label">Loading admin<span class="loader-dots"></span></p>
+  </div>
+</div>
+
+<!-- ══════════ ADMIN CONTENT (hidden until logged in) ══════════ -->
+<div id="admin-content" style="display:none">
+
+  <!-- NAV -->
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a class="nav-brand" href="index.html">
+        <div class="nav-brand-icon"><i data-lucide="zap" style="width:15px;height:15px"></i></div>
+        <span class="nav-brand-name">Satyam's Store</span>
+      </a>
+      <div class="nav-links">
+        <a class="nav-link" href="index.html">
+          <i data-lucide="shopping-bag" style="width:14px;height:14px"></i> Store
+        </a>
+        <a class="nav-link active" href="admin.html">
+          <i data-lucide="settings" style="width:14px;height:14px"></i> Admin
+        </a>
+        <a class="nav-link" href="admin-sales.html">
+          <i data-lucide="bar-chart-2" style="width:14px;height:14px"></i> Sales
+        </a>
+        <button onclick="logout()" style="display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:8px;border:1px solid rgba(248,113,113,.25);background:rgba(248,113,113,.06);color:var(--red);font-size:.76rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s">
+          <i data-lucide="log-out" style="width:13px;height:13px"></i> Logout
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-wrap" style="padding-bottom:40px">
+    <div class="page-title">
+      <i data-lucide="settings" style="width:22px;height:22px;color:#22d3ee;display:inline-block;vertical-align:middle;margin-right:8px"></i>
+      Admin Panel
+    </div>
+
+    <div class="admin-grid">
+
+      <!-- LEFT: Add Product Form -->
+      <div>
+        <div class="admin-card">
+          <div class="admin-card-title">
+            <i data-lucide="plus-circle" style="width:16px;height:16px;color:#22d3ee"></i>
+            Add Product
+          </div>
+          <form id="add-form" onsubmit="submitAdd(event)">
+            <div class="field">
+              <label>Name <span class="req">*</span></label>
+              <input id="f-name" type="text" required placeholder="e.g. KitKat"/>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div class="field">
+                <label>Price ₹ <span class="req">*</span></label>
+                <input id="f-price" type="number" step="0.01" min="0" required placeholder="20" inputmode="decimal"/>
+              </div>
+              <div class="field">
+                <label>Stock <span class="req">*</span></label>
+                <input id="f-stock" type="number" min="0" required placeholder="50" inputmode="numeric"/>
+              </div>
+            </div>
+            <div class="field">
+              <label>Barcode</label>
+              <input id="f-barcode" type="text" placeholder="Optional"/>
+            </div>
+            <div class="field">
+              <label>Image URL</label>
+              <input id="f-image" type="url" placeholder="https://…"/>
+            </div>
+            <button type="submit" id="add-btn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;background:linear-gradient(135deg,rgba(34,211,238,.15),rgba(34,211,238,.25));border:1px solid rgba(34,211,238,.35);border-radius:11px;color:var(--cyan);font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;box-shadow:0 0 18px rgba(34,211,238,.14);transition:all .15s;margin-top:4px">
+              <i data-lucide="plus-circle" style="width:14px;height:14px"></i>
+              <span id="add-btn-label">Add Product</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="admin-card" style="margin-top:16px">
+          <div class="admin-card-title">
+            <i data-lucide="bar-chart-2" style="width:16px;height:16px;color:#22d3ee"></i>
+            Quick Stats
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center">
+              <div id="stat-total" style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--cyan)">—</div>
+              <div style="font-size:.72rem;color:var(--text3);margin-top:3px">Total Products</div>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center">
+              <div id="stat-low" style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:#fbbf24">—</div>
+              <div style="font-size:.72rem;color:var(--text3);margin-top:3px">Low Stock (≤5)</div>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center">
+              <div id="stat-out" style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:#f87171">—</div>
+              <div style="font-size:.72rem;color:var(--text3);margin-top:3px">Out of Stock</div>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center">
+              <div id="stat-ok" style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:#34d399">—</div>
+              <div style="font-size:.72rem;color:var(--text3);margin-top:3px">In Stock</div>
+            </div>
+          </div>
+          <a href="admin-sales.html" style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:14px;padding:10px;background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.15);border-radius:10px;color:var(--cyan);font-size:.82rem;font-weight:600;text-decoration:none;transition:all .15s">
+            <i data-lucide="receipt-text" style="width:14px;height:14px"></i>
+            View Sales History
+          </a>
+        </div>
+      </div>
+
+      <!-- RIGHT: Product Table -->
+      <div class="admin-card">
+        <div class="admin-card-title" style="justify-content:space-between">
+          <span style="display:flex;align-items:center;gap:8px">
+            <i data-lucide="package" style="width:16px;height:16px;color:#22d3ee"></i>
+            Products
+          </span>
+          <button onclick="loadProducts()" style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.2);border-radius:7px;color:var(--cyan);font-size:.74rem;font-weight:600;cursor:pointer">
+            <i data-lucide="refresh-cw" style="width:12px;height:12px" id="refresh-icon"></i> Sync
+          </button>
+        </div>
+
+        <!-- States: only one visible at a time -->
+        <div id="table-loading" style="text-align:center;padding:36px;color:var(--text3);font-size:.84rem">
+          <div class="spinner" style="width:28px;height:28px;margin:0 auto 10px"></div>
+          Fetching products…
+        </div>
+        <div id="table-error" class="hidden" style="text-align:center;padding:36px;color:var(--red);font-size:.82rem">
+          <i data-lucide="wifi-off" style="width:32px;height:32px;opacity:.3;margin-bottom:8px;color:#f87171"></i>
+          <p>Failed to load products.</p>
+          <button onclick="loadProducts()" style="margin-top:10px;padding:7px 16px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.25);border-radius:8px;color:var(--cyan);font-size:.78rem;cursor:pointer">Retry</button>
+        </div>
+        <div id="table-empty" class="hidden" style="text-align:center;padding:36px;color:var(--text3);font-size:.84rem">
+          No products yet. Add one using the form.
+        </div>
+        <div id="table-wrap" class="hidden" style="overflow-x:auto">
+          <table class="product-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="product-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end #admin-content -->
+
+<!-- Delete Modal -->
+<div id="del-modal" class="overlay hidden">
+  <div class="modal">
+    <div class="danger-icon">
+      <i data-lucide="trash-2" style="width:26px;height:26px;color:#f87171"></i>
+    </div>
+    <div class="modal-title">Delete Product?</div>
+    <p id="del-name" class="modal-sub"></p>
+    <div class="modal-actions">
+      <button id="del-confirm-btn" onclick="confirmDelete()" class="delete-btn">
+        <i data-lucide="trash-2" style="width:13px;height:13px"></i> Delete
+      </button>
+      <button class="cancel-btn" onclick="closeDelModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="shared.js"></script>
+<script>
+// ── Password ──────────────────────────────────────
+const ADMIN_PASSWORD = '@satyam64136';
+const SESSION_KEY    = 'ss_admin_auth';
+
+let allProducts   = [];
+let deleteTargetId = null;
+
+// ── Boot ─────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  lucide.createIcons();
+  if (sessionStorage.getItem(SESSION_KEY) === 'true') {
+    showAdminPanel();
+  }
+  // Focus password input
+  const pw = document.getElementById('pw-input');
+  if (pw) pw.focus();
+});
+
+// ── Login ─────────────────────────────────────────
+function attemptLogin(e) {
+  e.preventDefault();
+  const input = document.getElementById('pw-input');
+  const errEl = document.getElementById('login-error');
+  const btn   = document.getElementById('login-btn');
+
+  if (input.value === ADMIN_PASSWORD) {
+    sessionStorage.setItem(SESSION_KEY, 'true');
+    btn.textContent = 'Access granted…';
+    errEl.textContent = '';
+    setTimeout(() => showAdminPanel(), 300);
+  } else {
+    input.classList.add('error');
+    errEl.textContent = 'Incorrect password. Try again.';
+    input.value = '';
+    setTimeout(() => input.classList.remove('error'), 500);
+    input.focus();
+  }
+}
+
+function togglePw() {
+  const input = document.getElementById('pw-input');
+  const icon  = document.getElementById('eye-icon');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.setAttribute('data-lucide', 'eye-off');
+  } else {
+    input.type = 'password';
+    icon.setAttribute('data-lucide', 'eye');
+  }
+  lucide.createIcons();
+}
+
+function logout() {
+  sessionStorage.removeItem(SESSION_KEY);
+  window.location.href = 'index.html';
+}
+
+async function showAdminPanel() {
+  document.getElementById('login-screen').classList.add('hidden');
+  // Show content first so DOM elements are visible when state toggles run
+  document.getElementById('admin-content').style.display = 'block';
+  lucide.createIcons();
+  await loadProducts();
+}
+
+// ── Products ──────────────────────────────────────
+async function loadProducts() {
+  const icon = document.getElementById('refresh-icon');
+  if (icon) icon.style.animation = 'spin .7s linear infinite';
+
+  setTableState('loading');
+
+  try {
+    const raw = await gasGet('getProducts');
+    allProducts = parseProducts(raw);
+    renderTable();
+    renderStats();
+  } catch(err) {
+    console.error('loadProducts:', err);
+    setTableState('error');
+  } finally {
+    if (icon) icon.style.animation = 'none';
+  }
+}
+
+// Show exactly one state in the product table area
+function setTableState(state) {
+  document.getElementById('table-loading').classList.toggle('hidden', state !== 'loading');
+  document.getElementById('table-error').classList.toggle('hidden',   state !== 'error');
+  document.getElementById('table-empty').classList.toggle('hidden',   state !== 'empty');
+  document.getElementById('table-wrap').classList.toggle('hidden',    state !== 'data');
+}
+
+function renderTable() {
+  if (!allProducts.length) { setTableState('empty'); return; }
+  setTableState('data');
+  const tbody = document.getElementById('product-tbody');
+  tbody.innerHTML = allProducts.map(p => {
+    const sc = p.stock === 0 ? 'stock-out' : p.stock <= 5 ? 'stock-low' : 'stock-ok';
+    const sl = p.stock === 0 ? 'Out' : p.stock;
+    return `<tr>
+      <td style="color:var(--text);font-weight:500;max-width:160px;word-break:break-word">${esc(p.name)}</td>
+      <td style="font-family:'JetBrains Mono',monospace;color:var(--cyan)">₹${p.price.toFixed(2)}</td>
+      <td><span class="stock-badge ${sc}">${sl}</span></td>
+      <td>
+        <button class="tbl-del-btn" onclick="askDelete('${esc(p.id)}','${esc(p.name.replace(/'/g,''))}')">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/>
+          </svg>
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+  lucide.createIcons();
+}
+
+function renderStats() {
+  document.getElementById('stat-total').textContent = allProducts.length;
+  document.getElementById('stat-out').textContent   = allProducts.filter(p => p.stock === 0).length;
+  document.getElementById('stat-low').textContent   = allProducts.filter(p => p.stock > 0 && p.stock <= 5).length;
+  document.getElementById('stat-ok').textContent    = allProducts.filter(p => p.stock > 5).length;
+}
+
+async function submitAdd(e) {
+  e.preventDefault();
+  const name    = document.getElementById('f-name').value.trim();
+  const price   = parseFloat(document.getElementById('f-price').value);
+  const stock   = parseInt(document.getElementById('f-stock').value, 10);
+  const barcode = document.getElementById('f-barcode').value.trim();
+  const image   = document.getElementById('f-image').value.trim();
+  if (!name || isNaN(price) || isNaN(stock)) { toast('Fill all required fields'); return; }
+  const btn = document.getElementById('add-btn');
+  const lbl = document.getElementById('add-btn-label');
+  btn.disabled = true; lbl.textContent = 'Saving…';
+  try {
+    await gasPost({ action:'addProduct', name, price, stock, image, barcode });
+    toast(`"${name}" added — syncing…`);
+    document.getElementById('add-form').reset();
+    await delay(2000);
+    await loadProducts();
+  } catch(err) { toast('Network error'); }
+  finally { btn.disabled = false; lbl.textContent = 'Add Product'; }
+}
+
+function askDelete(id, name) {
+  deleteTargetId = id;
+  document.getElementById('del-name').textContent = `"${name}" will be permanently removed.`;
+  document.getElementById('del-modal').classList.remove('hidden');
+  lucide.createIcons();
+}
+
+function closeDelModal() {
+  document.getElementById('del-modal').classList.add('hidden');
+  deleteTargetId = null;
+}
+
+async function confirmDelete() {
+  if (!deleteTargetId) return;
+  const btn = document.getElementById('del-confirm-btn');
+  btn.disabled = true; btn.textContent = 'Deleting…';
+  try {
+    await gasPost({ action:'deleteProduct', id: deleteTargetId });
+    toast('Deleted — syncing…');
+    closeDelModal();
+    await delay(2000);
+    await loadProducts();
+  } catch(err) { toast('Delete failed'); }
+  finally { btn.disabled = false; btn.textContent = 'Delete'; deleteTargetId = null; }
+}
+
+document.addEventListener('click', e => {
+  if (e.target === document.getElementById('del-modal')) closeDelModal();
+});
+</script>
+</body>
+</html>
