@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ESP Lock Test</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #111;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      gap: 20px;
+    }
+
+    button {
+      width: 200px;
+      padding: 15px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .unlock { background: #00e5a0; color: black; }
+    .lock { background: #ff4757; color: white; }
+
+    #status {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
+<h2>ESP Lock Test</h2>
+
+<button class="unlock" onclick="setFlag(true)">🔓 UNLOCK</button>
+<button class="lock" onclick="setFlag(false)">🔒 LOCK</button>
+
+<div id="status">Waiting...</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbylvc6xeCWt1qGqZ4Vwtg7XAmLuCef11YHlAaOnDe8a6w24QqygtlZDXGHI8xH-EuvysQ/exec";
+const API_KEY = "satyam123";   // ✅ THIS WAS MISSING
+
+async function setFlag(val) {
+  document.getElementById("status").innerText = "Sending...";
+
+  try {
+    const url = API_URL + "?action=set_flag&value=" + val + "&key=" + API_KEY;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    document.getElementById("status").innerText =
+      "Success: " + JSON.stringify(data);
+
+  } catch (e) {
+    document.getElementById("status").innerText =
+      "Error: " + e.message;
+  }
+}
+</script>
+
+</body>
+</html>
