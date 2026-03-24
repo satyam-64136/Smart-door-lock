@@ -341,7 +341,7 @@
   // ════════════════════════════════════════════════
   //  CONFIG
   // ════════════════════════════════════════════════
-  const API_URL = "https://script.google.com/macros/s/AKfycbwxT4UXNYJZGtFWGc_sHcWmUQrHfmm1KmGc2x3aWsHosBaII69DHyY8kfr-iMJT_iox3w/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbylvc6xeCWt1qGqZ4Vwtg7XAmLuCef11YHlAaOnDe8a6w24QqygtlZDXGHI8xH-EuvysQ/exec";
   const API_KEY = "satyam123";
   // ════════════════════════════════════════════════
 
@@ -413,15 +413,7 @@
   }
 
   async function api(payload) {
-    // ROOT CAUSE FIX:
-    // Apps Script URLs redirect from script.google.com → script.googleusercontent.com.
-    // Browsers follow that redirect but silently DROP the POST body (per HTTP spec).
-    // The body never arrives, Apps Script gets nothing, request fails.
-    //
-    // SOLUTION: Use GET with all params in the query string.
-    //   - No body to lose on redirect.
-    //   - No CORS preflight (GET is a simple request).
-    //   - doGet() in Code.gs already handles request_unlock and verify_otp.
+    // GET with query string: no CORS preflight, body survives Google's redirect.
     const params = new URLSearchParams({ ...payload, key: API_KEY });
     const r = await fetch(API_URL + "?" + params.toString(), {
       method: "GET",

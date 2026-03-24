@@ -1,15 +1,16 @@
 /**
  * Smart Door Lock – ESP8266 NodeMCU Firmware
  * Board  : NodeMCU 1.0 (ESP-12E) / CP2102
- * Relay  : 2-channel, ACTIVE LOW, on GPIO4 (D2)  ← moved from D1 for boot safety
+ * Relay  : 2-channel, ACTIVE HIGH, on GPIO4 (D2)
+ *            HIGH = ON (unlock) | LOW = OFF (locked)
  * LED    : Built-in LED (D4 / GPIO2), ACTIVE LOW — blinks when WiFi connected
  * Logic  : Poll Google Apps Script every 1.5 s.
  *          If unlock_flag == true → open relay 4 s → reset flag.
  *
  * BOOT SAFETY NOTES:
- *   - Relay pin is driven HIGH (relay OFF) BEFORE pinMode, via direct register write.
+ *   - Relay pin driven LOW (relay OFF) on boot — active-HIGH relay is
+ *     naturally safe since ESP8266 pins default LOW at power-on.
  *   - D2 (GPIO4) has no special boot function; safe for relay control.
- *   - A 10k pull-up resistor from D2 → 3.3V is recommended in hardware.
  */
 
 #include <ESP8266WiFi.h>
@@ -23,10 +24,9 @@
 const char* WIFI_SSID     = "none";
 const char* WIFI_PASSWORD = "";
 
-const char* API_BASE_URL  =
-  "https://script.google.com/macros/s/"
-  "AKfycbwxT4UXNYJZGtFWGc_sHcWmUQrHfmm1KmGc2x3aWsHosBaII69DHyY8kfr-iMJT_iox3w"
-  "/exec";
+
+const char* API_BASE_URL =
+  "https://script.google.com/macros/s/AKfycbylvc6xeCWt1qGqZ4Vwtg7XAmLuCef11YHlAaOnDe8a6w24QqygtlZDXGHI8xH-EuvysQ/exec";
 
 const char* API_KEY = "satyam123";
 
@@ -37,7 +37,7 @@ const char* API_KEY = "satyam123";
 // Both are safe, but D2 has no special boot-state concerns and is
 // the recommended pin when a pull-up resistor is added.
 const int RELAY_PIN         = D2;      // GPIO4 — wire IN1 here
-const bool RELAY_ACTIVE_LOW = true;    // relay triggers on LOW; OFF = HIGH
+const bool RELAY_ACTIVE_LOW = false;   // ACTIVE HIGH: HIGH = ON (unlock), LOW = OFF (locked)
 
 // Built-in LED is on D4 (GPIO2), active LOW.
 const int STATUS_LED        = LED_BUILTIN;  // D4
@@ -68,14 +68,13 @@ void relayOff() {
 }
 
 void initRelay() {
-  // STEP 1 — drive pin HIGH via direct GPIO register BEFORE pinMode.
-  // This is the earliest possible moment; prevents the ~1 ms LOW glitch
-  // that occurs when pinMode(OUTPUT) is called on a pin that defaulted LOW.
-  // For an active-LOW relay this glitch is enough to trigger it.
-  digitalWrite(RELAY_PIN, HIGH);   // HIGH = relay OFF (active-LOW module)
-  pinMode(RELAY_PIN, OUTPUT);      // now set direction — pin stays HIGH
-  digitalWrite(RELAY_PIN, HIGH);   // belt-and-suspenders: assert again
-  delay(50);                       // let relay settle; confirm no chatter
+  // Active-HIGH relay: LOW = OFF (locked), HIGH = ON (unlock).
+  // ESP8266 pins default LOW at boot, so this relay is naturally safe —
+  // it cannot accidentally fire before firmware runs.
+  // We still assert LOW explicitly for clarity and reset-safety.
+  pinMode(RELAY_PIN, OUTPUT);
+  digitalWrite(RELAY_PIN, LOW);    // LOW = relay OFF (active-HIGH module)
+  delay(50);
   Serial.println("[RELAY] Initialized — locked");
 }
 
