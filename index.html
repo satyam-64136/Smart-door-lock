@@ -3,34 +3,22 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Smart Lock</title>
+  <title>Smart Lock - Access Control</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
 
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:         #0a0c0f;
-      --surface:    #111418;
-      --border:     #1e2530;
-      --accent:     #00e5a0;
-      --accent-dim: #00a86b;
-      --danger:     #ff4757;
-      --warn:       #ffb830;
-      --text:       #d4dce8;
-      --muted:      #5a6a80;
-      --mono:       'Share Tech Mono', monospace;
-      --sans:       'Rajdhani', sans-serif;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
     html, body {
       height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--sans);
-      font-size: 16px;
-      -webkit-font-smoothing: antialiased;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #e2e8f0;
     }
 
     body {
@@ -38,455 +26,743 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
+      padding: 16px;
     }
 
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image:
-        linear-gradient(rgba(0,229,160,.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,229,160,.04) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
+    .container {
+      width: 100%;
+      max-width: 420px;
     }
 
-    /* ── Card ── */
     .card {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-radius: 20px;
+      padding: 40px 28px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(71, 85, 105, 0.5);
       position: relative;
-      width: min(420px, 92vw);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 40px 36px 36px;
-      box-shadow: 0 0 60px rgba(0,229,160,.06), 0 24px 60px rgba(0,0,0,.6);
+      overflow: hidden;
     }
+
     .card::before {
       content: '';
       position: absolute;
-      top: -1px; left: -1px;
-      width: 60px; height: 60px;
-      border-top: 2px solid var(--accent);
-      border-left: 2px solid var(--accent);
-      border-radius: 12px 0 0 0;
-    }
-    .card::after {
-      content: '';
-      position: absolute;
-      bottom: -1px; right: -1px;
-      width: 60px; height: 60px;
-      border-bottom: 2px solid var(--accent);
-      border-right: 2px solid var(--accent);
-      border-radius: 0 0 12px 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.3), transparent);
     }
 
-    /* ── Header ── */
     .header {
       display: flex;
       align-items: center;
-      gap: 14px;
-      margin-bottom: 28px;
+      gap: 16px;
+      margin-bottom: 32px;
     }
-    .lock-icon { width: 44px; height: 44px; flex-shrink: 0; }
+
+    .lock-icon {
+      width: 52px;
+      height: 52px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lock-icon svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.3));
+    }
+
     .lock-icon .shackle {
-      transition: transform .5s cubic-bezier(.34,1.56,.64,1);
-      transform-origin: 50% 80%;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-origin: 50% 35%;
+      stroke: #3b82f6;
+      stroke-width: 1.5;
     }
+
     .card.unlocked .lock-icon .shackle {
-      transform: rotate(-40deg) translateY(-3px);
+      transform: rotate(-40deg) translateY(-2px);
+      stroke: #10b981;
+      filter: drop-shadow(0 0 12px rgba(16, 185, 129, 0.4));
     }
+
+    .card.unlocked .lock-icon circle {
+      fill: #10b981;
+      filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.5));
+    }
+
     .title-group h1 {
-      font-size: 1.45rem; font-weight: 700;
-      letter-spacing: .08em; text-transform: uppercase; color: #fff;
+      font-size: 28px;
+      font-weight: 700;
+      color: #f1f5f9;
+      letter-spacing: -0.5px;
     }
+
     .title-group p {
-      font-family: var(--mono); font-size: .7rem;
-      color: var(--muted); letter-spacing: .05em; margin-top: 2px;
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 4px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
     }
 
-    /* ── Status ── */
-    .status-row {
-      display: flex; align-items: center; gap: 8px;
-      font-family: var(--mono); font-size: .75rem;
-      color: var(--muted); margin-bottom: 28px; letter-spacing: .04em;
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: #94a3b8;
+      margin-bottom: 28px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-weight: 500;
     }
-    .dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--muted); flex-shrink: 0;
-      transition: background .3s, box-shadow .3s;
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #64748b;
+      transition: all 0.3s ease;
     }
-    .dot.online  { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
-    .dot.success { background: var(--accent); box-shadow: 0 0 12px var(--accent); animation: pulse 1s ease 3; }
-    .dot.warn    { background: var(--warn);   box-shadow: 0 0 8px var(--warn); }
-    .dot.error   { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
+
+    .status-dot.online {
+      background: #3b82f6;
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+    }
+
+    .status-dot.success {
+      background: #10b981;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+      animation: pulse 1.5s ease infinite;
+    }
+
+    .status-dot.error {
+      background: #ef4444;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+    }
+
+    .status-dot.warn {
+      background: #f59e0b;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+    }
+
     @keyframes pulse {
-      0%,100% { box-shadow: 0 0 8px var(--accent); }
-      50%     { box-shadow: 0 0 20px var(--accent), 0 0 40px rgba(0,229,160,.4); }
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.8; }
     }
 
-    /* ── Step indicator ── */
-    .step-indicator {
-      display: flex; align-items: center; margin-bottom: 28px;
+    .steps {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
     }
-    .s-dot {
-      width: 28px; height: 28px; border-radius: 50%;
-      border: 1.5px solid var(--border); background: var(--bg);
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--mono); font-size: .7rem; color: var(--muted);
-      flex-shrink: 0; transition: all .3s;
-    }
-    .s-dot.active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,160,.08); }
-    .s-dot.done   { border-color: var(--accent-dim); background: var(--accent-dim); color: #000; }
-    .s-line { flex: 1; height: 1.5px; background: var(--border); transition: background .3s; }
-    .s-line.done { background: var(--accent-dim); }
 
-    /* ── Steps ── */
-    .step { display: none; }
-    .step.active { display: block; }
+    .step-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid #475569;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: #94a3b8;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .step-dot.active {
+      border-color: #3b82f6;
+      color: #3b82f6;
+      background: rgba(59, 130, 246, 0.15);
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .step-dot.done {
+      border-color: #10b981;
+      background: #10b981;
+      color: #f1f5f9;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: #475569;
+      transition: all 0.4s ease;
+    }
+
+    .step-line.done {
+      background: linear-gradient(90deg, #10b981, transparent);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     .step-label {
-      font-size: .7rem; font-weight: 700;
-      letter-spacing: .1em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #3b82f6;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
     }
 
-    /* ── Input ── */
+    .step-desc {
+      font-size: 14px;
+      color: #cbd5e1;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
     .input-label {
-      display: block; font-size: .75rem; font-weight: 600;
-      letter-spacing: .12em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 8px;
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #e2e8f0;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 10px;
     }
+
     .otp-input {
-      width: 100%; background: var(--bg);
-      border: 1px solid var(--border); border-radius: 8px;
-      padding: 14px 16px; font-family: var(--mono);
-      font-size: 1.5rem; letter-spacing: .3em;
-      color: var(--text); outline: none; text-align: center;
-      transition: border-color .2s, box-shadow .2s;
+      width: 100%;
+      padding: 16px 18px;
+      border: 2px solid #475569;
+      border-radius: 12px;
+      background: rgba(30, 41, 59, 0.8);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 12px;
+      text-align: center;
+      color: #3b82f6;
+      transition: all 0.3s ease;
     }
+
     .otp-input:focus {
-      border-color: var(--accent-dim);
-      box-shadow: 0 0 0 3px rgba(0,229,160,.1);
-    }
-    .otp-input::placeholder { letter-spacing: .15em; color: var(--muted); font-size: 1rem; }
-
-    .hint {
-      font-family: var(--mono); font-size: .7rem;
-      color: var(--muted); margin-top: 10px;
-      text-align: center; line-height: 1.6;
+      outline: none;
+      border-color: #3b82f6;
+      background: rgba(59, 130, 246, 0.1);
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
     }
 
-    /* ── Buttons ── */
+    .otp-input::placeholder {
+      color: #64748b;
+      letter-spacing: 6px;
+    }
+
+    .otp-timer {
+      font-size: 12px;
+      font-weight: 600;
+      color: #f59e0b;
+      text-align: center;
+      margin-top: 10px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
     .btn {
-      margin-top: 20px; width: 100%; padding: 15px;
-      border: none; border-radius: 8px; font-family: var(--sans);
-      font-size: 1rem; font-weight: 700; letter-spacing: .12em;
-      text-transform: uppercase; cursor: pointer;
-      transition: background .2s, transform .15s, box-shadow .2s;
+      width: 100%;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 16px;
+      position: relative;
+      overflow: hidden;
     }
-    .btn:disabled { opacity: .45; cursor: not-allowed; }
-    .btn:active:not(:disabled) { transform: scale(.97); }
 
-    .btn-primary { background: var(--accent); color: #000; }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn:active::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+
     .btn-primary:hover:not(:disabled) {
-      background: #1affc0;
-      box-shadow: 0 0 24px rgba(0,229,160,.4);
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+      transform: translateY(-2px);
     }
-    .btn-ghost {
-      background: transparent; color: var(--muted);
-      border: 1px solid var(--border); margin-top: 10px;
-      font-size: .8rem; padding: 10px;
+
+    .btn-secondary {
+      background: rgba(71, 85, 105, 0.3);
+      color: #cbd5e1;
+      border: 1.5px solid #475569;
+      margin-top: 8px;
+      font-size: 13px;
     }
-    .btn-ghost:hover:not(:disabled) { color: var(--text); border-color: var(--muted); }
+
+    .btn-secondary:hover:not(:disabled) {
+      border-color: #3b82f6;
+      color: #3b82f6;
+      background: rgba(59, 130, 246, 0.1);
+    }
 
     .btn .spinner {
-      display: none; width: 16px; height: 16px;
-      border: 2px solid rgba(0,0,0,.3); border-top-color: #000;
-      border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto;
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2.5px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto;
     }
-    .btn.loading .btn-text { display: none; }
-    .btn.loading .spinner  { display: block; }
-    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Toast ── */
+    .btn.loading .btn-text {
+      display: none;
+    }
+
+    .btn.loading .spinner {
+      display: block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
     .toast {
-      margin-top: 16px; padding: 11px 15px; border-radius: 8px;
-      font-family: var(--mono); font-size: .75rem; letter-spacing: .04em;
-      opacity: 0; transform: translateY(6px);
-      transition: opacity .3s, transform .3s; pointer-events: none;
+      margin-top: 14px;
+      padding: 13px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+      border-left: 3px solid;
+      backdrop-filter: blur(8px);
     }
-    .toast.show { opacity: 1; transform: translateY(0); }
-    .toast.success { background: rgba(0,229,160,.1); border: 1px solid rgba(0,229,160,.3); color: var(--accent); }
-    .toast.error   { background: rgba(255,71,87,.1);  border: 1px solid rgba(255,71,87,.3);  color: var(--danger); }
-    .toast.warn    { background: rgba(255,184,48,.1); border: 1px solid rgba(255,184,48,.3); color: var(--warn); }
 
-    /* ── Success screen ── */
-    .success-icon { text-align: center; padding: 12px 0 16px; }
-    .success-icon svg { margin-bottom: 16px; }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.success {
+      background: rgba(16, 185, 129, 0.1);
+      border-left-color: #10b981;
+      color: #6ee7b7;
+    }
+
+    .toast.error {
+      background: rgba(239, 68, 68, 0.1);
+      border-left-color: #ef4444;
+      color: #fca5a5;
+    }
+
+    .toast.warn {
+      background: rgba(245, 158, 11, 0.1);
+      border-left-color: #f59e0b;
+      color: #fcd34d;
+    }
+
+    .success-icon {
+      text-align: center;
+      margin-bottom: 20px;
+      animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .success-icon svg {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto;
+      filter: drop-shadow(0 0 16px rgba(16, 185, 129, 0.4));
+    }
+
     .success-title {
-      font-size: 1.2rem; font-weight: 700;
-      letter-spacing: .08em; color: #fff; text-transform: uppercase;
+      font-size: 22px;
+      font-weight: 700;
+      color: #10b981;
+      text-align: center;
+      margin-top: 16px;
     }
 
-    /* ── Log ── */
-    .log-section { margin-top: 28px; border-top: 1px solid var(--border); padding-top: 18px; }
-    .log-title {
-      font-size: .7rem; font-weight: 700;
-      letter-spacing: .14em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 10px;
+    .success-desc {
+      font-size: 13px;
+      color: #94a3b8;
+      text-align: center;
+      margin-top: 8px;
     }
-    .log-feed {
-      list-style: none; display: flex; flex-direction: column;
-      gap: 6px; max-height: 110px; overflow-y: auto;
+
+    .activity {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(71, 85, 105, 0.4);
     }
-    .log-feed::-webkit-scrollbar { width: 3px; }
-    .log-feed::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-    .log-entry {
-      font-family: var(--mono); font-size: .68rem;
-      color: var(--muted); display: flex; gap: 8px;
-      animation: slideIn .25s ease;
+
+    .activity-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #3b82f6;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
     }
+
+    .activity-log {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 110px;
+      overflow-y: auto;
+    }
+
+    .activity-log::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .activity-log::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .activity-log::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 2px;
+    }
+
+    .activity-item {
+      font-size: 12px;
+      display: flex;
+      gap: 10px;
+      color: #94a3b8;
+      font-family: 'JetBrains Mono', monospace;
+      animation: slideIn 0.3s ease;
+    }
+
     @keyframes slideIn {
-      from { opacity: 0; transform: translateX(-6px); }
-      to   { opacity: 1; transform: none; }
+      from {
+        opacity: 0;
+        transform: translateX(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
-    .log-entry .log-time { flex-shrink: 0; }
-    .log-entry .log-ok   { color: var(--accent); }
-    .log-entry .log-err  { color: var(--danger); }
-    .log-entry .log-warn { color: var(--warn); }
-    .log-entry .log-info { color: var(--text); }
+
+    .activity-time {
+      color: #64748b;
+      flex-shrink: 0;
+    }
+
+    .activity-item.success { color: #6ee7b7; }
+    .activity-item.error { color: #fca5a5; }
+    .activity-item.warn { color: #fcd34d; }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 28px 20px;
+        border-radius: 16px;
+      }
+
+      .title-group h1 {
+        font-size: 24px;
+      }
+
+      .header {
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+
+      .lock-icon {
+        width: 44px;
+        height: 44px;
+      }
+
+      .btn {
+        padding: 13px 16px;
+        font-size: 13px;
+      }
+
+      .otp-input {
+        font-size: 20px;
+        letter-spacing: 10px;
+      }
+
+      .step-desc {
+        font-size: 13px;
+      }
+    }
   </style>
 </head>
 <body>
-<div class="card" id="card">
-
-  <!-- Header -->
-  <div class="header">
-    <svg class="lock-icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="8" y="20" width="28" height="20" rx="4" fill="#1e2530" stroke="#00e5a0" stroke-width="1.5"/>
-      <path class="shackle" d="M14 20V14a8 8 0 1 1 16 0v6" stroke="#00e5a0" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-      <circle cx="22" cy="30" r="3" fill="#00e5a0"/>
-      <line x1="22" y1="33" x2="22" y2="36" stroke="#00e5a0" stroke-width="1.5" stroke-linecap="round"/>
-    </svg>
-    <div class="title-group">
-      <h1>Smart Lock</h1>
-      <p>ACCESS CONTROL SYSTEM v1.0</p>
+<div class="container">
+  <div class="card" id="card">
+    <div class="header">
+      <div class="lock-icon">
+        <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="20" width="28" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path class="shackle" d="M14 20V14a8 8 0 0 1 16 0v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="22" cy="30" r="2.5" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="title-group">
+        <h1>Smart Lock</h1>
+        <p>Access Control System</p>
+      </div>
     </div>
-  </div>
 
-  <!-- Status -->
-  <div class="status-row">
-    <div class="dot online" id="statusDot"></div>
-    <span id="statusText">SYSTEM ACTIVE</span>
-  </div>
+    <div class="status">
+      <div class="status-dot online" id="statusDot"></div>
+      <span id="statusText">System Online</span>
+    </div>
 
-  <!-- Step indicator (3 steps) -->
-  <div class="step-indicator">
-    <div class="s-dot active" id="ind1">1</div>
-    <div class="s-line"       id="line1"></div>
-    <div class="s-dot"        id="ind2">2</div>
-    <div class="s-line"       id="line2"></div>
-    <div class="s-dot"        id="ind3">✓</div>
-  </div>
+    <div class="steps">
+      <div class="step-dot active" id="step-dot-1">1</div>
+      <div class="step-line" id="step-line-1"></div>
+      <div class="step-dot" id="step-dot-2">2</div>
+      <div class="step-line" id="step-line-2"></div>
+      <div class="step-dot" id="step-dot-3">✓</div>
+    </div>
 
-  <!-- ══ STEP 1 : Request OTP ══ -->
-  <div class="step active" id="step1">
-    <div class="step-label">Step 1 — Request OTP</div>
-    <p class="hint">Tap the button to receive a one-time code<br>on your Telegram.</p>
-    <button class="btn btn-primary" id="sendOtpBtn" onclick="sendOtp()">
-      <span class="btn-text">SEND OTP TO TELEGRAM</span>
-      <span class="spinner"></span>
-    </button>
-    <div class="toast" id="toast1"></div>
-  </div>
+    <div class="step active" id="step-1-content">
+      <div class="step-label">Step 1 — Request Code</div>
+      <div class="step-desc">Send a one-time code to your Telegram</div>
+      <button class="btn btn-primary" id="sendBtn" onclick="sendOtp()">
+        <span class="btn-text">Send Code</span>
+        <span class="spinner"></span>
+      </button>
+      <div class="toast" id="toast-1"></div>
+    </div>
 
-  <!-- ══ STEP 2 : Enter OTP ══ -->
-  <div class="step" id="step2">
-    <div class="step-label">Step 2 — Enter OTP</div>
-    <label class="input-label" for="otpInput">4-digit code from Telegram</label>
-    <input
-      class="otp-input" id="otpInput"
-      type="text" inputmode="numeric"
-      maxlength="4" placeholder="• • • •" autocomplete="off"
-    />
-    <button class="btn btn-primary" id="verifyBtn" onclick="verifyOtp()">
-      <span class="btn-text">VERIFY &amp; UNLOCK</span>
-      <span class="spinner"></span>
-    </button>
-    <button class="btn btn-ghost" onclick="resetToStep1()">← Request a new OTP</button>
-    <div class="toast" id="toast2"></div>
-  </div>
+    <div class="step" id="step-2-content">
+      <div class="step-label">Step 2 — Verify Code</div>
+      <div class="input-group">
+        <label class="input-label">Enter 4-digit code</label>
+        <input class="otp-input" id="otpInput" type="text" inputmode="numeric" maxlength="4" placeholder="•  •  •  •" autocomplete="off"/>
+        <div class="otp-timer" id="timer"></div>
+      </div>
+      <button class="btn btn-primary" id="verifyBtn" onclick="verifyOtp()">
+        <span class="btn-text">Unlock Door</span>
+        <span class="spinner"></span>
+      </button>
+      <button class="btn btn-secondary" onclick="resetToStep1()">Request New Code</button>
+      <div class="toast" id="toast-2"></div>
+    </div>
 
-  <!-- ══ STEP 3 : Success ══ -->
-  <div class="step" id="step3">
-    <div class="success-icon">
-      <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
-        <circle cx="28" cy="28" r="27" stroke="#00e5a0" stroke-width="1.5" fill="rgba(0,229,160,.08)"/>
-        <path d="M17 28.5l8 8 14-16" stroke="#00e5a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+    <div class="step" id="step-3-content">
+      <div class="success-icon">
+        <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="28" cy="28" r="26" stroke="currentColor" stroke-width="2" fill="rgba(16, 185, 129, 0.15)"/>
+          <path d="M18 28l8 8 12-14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
       <div class="success-title">Door Unlocked</div>
-      <p class="hint" style="margin-top:10px">Relay is active. Lock resets automatically.</p>
+      <div class="success-desc">Access granted • Relay activated</div>
+      <button class="btn btn-secondary" style="margin-top: 20px;" onclick="resetToStep1()">Lock Again</button>
     </div>
-    <button class="btn btn-ghost" style="margin-top:20px" onclick="resetToStep1()">DONE / LOCK AGAIN</button>
-  </div>
 
-  <!-- Activity log -->
-  <div class="log-section">
-    <div class="log-title">Activity Log</div>
-    <ul class="log-feed" id="logFeed"></ul>
+    <div class="activity">
+      <div class="activity-title">Activity Log</div>
+      <ul class="activity-log" id="log"></ul>
+    </div>
   </div>
-
 </div>
 
 <script>
-  // ════════════════════════════════════════════════
-  //  CONFIG
-  // ════════════════════════════════════════════════
-  const API_URL = "https://script.google.com/macros/s/AKfycbylvc6xeCWt1qGqZ4Vwtg7XAmLuCef11YHlAaOnDe8a6w24QqygtlZDXGHI8xH-EuvysQ/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbzHVuiVRD8zBq3_TA5HhgL5eQDbnwP5zUERn-Yu8VT4Zw0rPzJceJ_Zm4pqk_QbGNaZpw/exec";
   const API_KEY = "satyam123";
-  // ════════════════════════════════════════════════
 
-  // DOM
-  const $  = id => document.getElementById(id);
-  const statusDot  = $("statusDot");
+  const $ = id => document.getElementById(id);
+  const card = $("card");
+  const log = $("log");
+  const sendBtn = $("sendBtn");
+  const verifyBtn = $("verifyBtn");
+  const otpInput = $("otpInput");
+  const timer = $("timer");
+  const toast1 = $("toast-1");
+  const toast2 = $("toast-2");
+  const statusDot = $("statusDot");
   const statusText = $("statusText");
-  const card       = $("card");
-  const logFeed    = $("logFeed");
-  const sendOtpBtn = $("sendOtpBtn");
-  const verifyBtn  = $("verifyBtn");
-  const otpInput   = $("otpInput");
-  const toast1     = $("toast1");
-  const toast2     = $("toast2");
-  const stepEls    = [$("step1"),  $("step2"),  $("step3")];
-  const indEls     = [$("ind1"),   $("ind2"),   $("ind3")];
-  const lineEls    = [$("line1"),  $("line2")];
 
   otpInput.addEventListener("keyup", e => { if (e.key === "Enter") verifyOtp(); });
 
-  // ── Helpers ──────────────────────────────────
-
-  function setStatus(cls, text) {
-    statusDot.className    = "dot " + cls;
+  function setStatus(type, text) {
+    statusDot.className = "status-dot " + type;
     statusText.textContent = text;
   }
 
-  function toast(el, type, msg) {
+  function showToast(el, type, msg) {
     el.className = "toast " + type;
     el.textContent = msg;
     void el.offsetWidth;
     el.classList.add("show");
-    setTimeout(() => el.classList.remove("show"), 4500);
+    setTimeout(() => el.classList.remove("show"), 4000);
   }
 
-  function log(type, msg) {
-    const t  = new Date().toLocaleTimeString("en-GB", { hour12: false });
+  function addLog(type, msg) {
+    const t = new Date().toLocaleTimeString("en-GB", { hour12: false });
     const li = document.createElement("li");
-    li.className = "log-entry";
-    li.innerHTML = `<span class="log-time">${t}</span><span class="log-${type}">${msg}</span>`;
-    logFeed.prepend(li);
-    while (logFeed.children.length > 25) logFeed.removeChild(logFeed.lastChild);
+    li.className = "activity-item " + type;
+    li.innerHTML = `<span class="activity-time">${t}</span><span>${msg}</span>`;
+    log.prepend(li);
+    while (log.children.length > 20) log.removeChild(log.lastChild);
   }
 
-  function busy(btn, on) {
-    btn.disabled = on;
-    btn.classList.toggle("loading", on);
-  }
-
-  function goStep(n) {
-    stepEls.forEach((s, i) => s.classList.toggle("active", i === n));
-    indEls.forEach((d, i) => {
-      d.className = "s-dot";
-      if (i < n)       d.classList.add("done");
-      else if (i === n) d.classList.add("active");
-    });
-    lineEls.forEach((l, i) => l.classList.toggle("done", i < n));
-    card.classList.toggle("unlocked", n === 2);
-    if (n === 2) {
-      setStatus("success", "DOOR UNLOCKED");
-      setTimeout(resetToStep1, 8000);   // auto-reset after 8 s
+  function setStep(n) {
+    for (let i = 1; i <= 3; i++) {
+      const step = $("step-" + i + "-content");
+      const dot = $("step-dot-" + i);
+      const line = $("step-line-" + i);
+      
+      if (step) step.classList.toggle("active", i === n);
+      if (dot) {
+        dot.classList.remove("active", "done");
+        if (i < n) dot.classList.add("done");
+        else if (i === n) dot.classList.add("active");
+      }
+      if (line && i < 3) line.classList.toggle("done", i < n);
+    }
+    
+    if (n === 3) {
+      setStatus("success", "Door Unlocked");
+      card.classList.add("unlocked");
+      setTimeout(resetToStep1, 7000);
     }
   }
 
   function resetToStep1() {
     otpInput.value = "";
-    setStatus("online", "SYSTEM ACTIVE");
-    goStep(0);
+    timer.textContent = "";
+    setStatus("online", "System Online");
+    setStep(1);
+    card.classList.remove("unlocked");
   }
 
   async function api(payload) {
-    // GET with query string: no CORS preflight, body survives Google's redirect.
     const params = new URLSearchParams({ ...payload, key: API_KEY });
-    const r = await fetch(API_URL + "?" + params.toString(), {
-      method: "GET",
-      redirect: "follow"
-    });
+    const r = await fetch(API_URL + "?" + params.toString(), { method: "GET", redirect: "follow" });
     if (!r.ok) throw new Error("HTTP " + r.status);
-    const text = await r.text();
-    try {
-      return JSON.parse(text);
-    } catch {
-      throw new Error("Invalid response: " + text.slice(0, 120));
-    }
+    return JSON.parse(await r.text());
   }
 
-  // ── Step 1 : Request OTP ─────────────────────
-
   async function sendOtp() {
-    busy(sendOtpBtn, true);
-    setStatus("warn", "SENDING OTP…");
+    sendBtn.classList.add("loading");
+    setStatus("warn", "Sending...");
     try {
       const data = await api({ action: "request_unlock", method: "WEB" });
       if (data.success) {
-        log("ok", "OTP dispatched to Telegram");
-        setStatus("warn", "WAITING FOR OTP ENTRY");
-        goStep(1);
-        setTimeout(() => otpInput.focus(), 150);
+        addLog("success", "Code sent to Telegram");
+        setStatus("warn", "Enter Your Code");
+        setStep(2);
+        otpInput.focus();
       } else {
-        toast(toast1, "error", "✗ " + (data.error || "Server error."));
-        log("err", "Request failed: " + (data.error || "unknown"));
-        setStatus("error", "FAILED");
+        showToast(toast1, "error", "✗ " + (data.error || "Failed"));
+        addLog("error", "Request failed");
+        setStatus("error", "Failed");
       }
     } catch (e) {
-      toast(toast1, "error", "✗ Cannot reach server. Check your connection.");
-      log("err", "Network: " + e.message);
-      setStatus("error", "CONNECTION ERROR");
+      showToast(toast1, "error", "✗ Cannot connect");
+      addLog("error", "Network error: " + e.message);
+      setStatus("error", "Connection Error");
     } finally {
-      busy(sendOtpBtn, false);
+      sendBtn.classList.remove("loading");
     }
   }
-
-  // ── Step 2 : Verify OTP ──────────────────────
 
   async function verifyOtp() {
     const otp = otpInput.value.trim();
     if (!/^\d{4}$/.test(otp)) {
-      toast(toast2, "warn", "Enter the 4-digit code from Telegram.");
+      showToast(toast2, "warn", "Enter 4 digits");
       otpInput.focus();
       return;
     }
-    busy(verifyBtn, true);
-    setStatus("warn", "VERIFYING…");
+    verifyBtn.classList.add("loading");
+    setStatus("warn", "Verifying...");
     try {
       const data = await api({ action: "verify_otp", method: "WEB", otp });
+      console.log("Verification response:", data);
       if (data.success) {
-        log("ok", "OTP correct → unlock signal sent");
-        goStep(2);
+        addLog("success", "Code verified ✓");
+        setStep(3);
       } else {
-        toast(toast2, "error", "✗ " + (data.error || "Wrong OTP."));
-        log("err", "Wrong OTP entered");
-        setStatus("error", "WRONG OTP");
+        showToast(toast2, "error", "✗ " + (data.error || "Wrong code"));
+        addLog("error", data.error || "Wrong code");
+        setStatus("error", "Wrong Code");
         otpInput.select();
       }
     } catch (e) {
-      toast(toast2, "error", "✗ Cannot reach server.");
-      log("err", "Network: " + e.message);
-      setStatus("error", "CONNECTION ERROR");
+      showToast(toast2, "error", "✗ Cannot connect");
+      addLog("error", "Network error: " + e.message);
+      setStatus("error", "Connection Error");
     } finally {
-      busy(verifyBtn, false);
+      verifyBtn.classList.remove("loading");
     }
   }
 
-  // Init
-  log("info", "Interface ready");
+  async function checkDelete() {
+    try {
+      await api({ action: "check_and_delete" });
+    } catch (e) {}
+  }
+
+  setInterval(checkDelete, 1000);
+  addLog("info", "System ready");
+  setStatus("online", "System Online");
 </script>
 </body>
 </html>
